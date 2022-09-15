@@ -29,7 +29,7 @@ Layout::Layout(){
 		mainLayout->addWidget(group[j], 4+j*3, 0, 1, 3);
 	}
 	setLayout(mainLayout);
-	setTimer(0.01);
+	setTimer(0.05);
 
 	connect(timer, SIGNAL(timeout()), this, SLOT(sample()));
 	connect(btn,   SIGNAL(clicked()), this, SLOT(sample()));
@@ -53,10 +53,10 @@ void Layout::addControls(){
 //		hex[i]->setDisabled(true);
 	}
 	spin_period = new QDoubleSpinBox;
-	spin_period->setValue(0.010);
-	spin_period->setMinimum(0.010);
-	spin_period->setMaximum(100.000);
-	spin_period->setSingleStep(0.010);
+	spin_period->setValue(0.05);
+	spin_period->setMinimum(0.05);
+	spin_period->setMaximum(100.00);
+	spin_period->setSingleStep(0.01);
 	label_period = new QLabel("Sample Rate (s)");
 	label_period->setAlignment(Qt::AlignRight);
 
@@ -64,6 +64,8 @@ void Layout::addControls(){
 	check_auto->setChecked(true);
 	label_auto = new QLabel("Auto Sample:");
 	label_auto->setAlignment(Qt::AlignRight);
+
+	udp = new QUdpSocket;
 }
 
 void Layout::setTimer(double v){
@@ -76,8 +78,10 @@ void Layout::setGPIOInput( uint8_t reg_id ){
 	message[0] = 8;
 	message[1] = 2;
 	message[2] = reg_id;
-	udp.send(CLEVEL_IP, CLEVEL_PORT, message, 3);
-	udp.recv(message, 3);
+	udp->writeDatagram((char*)message, 3, 
+		QHostAddress(CLEVEL_IP), CLEVEL_PORT);
+	while( !udp->hasPendingDatagrams() );
+	udp->readDatagram((char*)message, 3);
 }
 
 void Layout::sample(){
@@ -85,8 +89,10 @@ void Layout::sample(){
 	memset(message, 0, 14);
 	message[0] = 11;
 	message[1] = 2;
-	udp.send(CLEVEL_IP, CLEVEL_PORT, message, 14);
-	udp.recv(message, 14);
+	udp->writeDatagram((char*)message,14, 
+		QHostAddress(CLEVEL_IP), CLEVEL_PORT);
+	while( !udp->hasPendingDatagrams() );
+	udp->readDatagram((char*)message,14);
 	uint32_t *bswap = (uint32_t*)&(message[2]);
 	for( int i = 0; i < 3; i++ ){
 		data[i] = bswap[i];

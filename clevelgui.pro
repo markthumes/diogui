@@ -3,13 +3,7 @@ TARGET = clevel
 
 QT = core gui widgets network
 
-INCLUDEPATH= hnet
-
 SOURCES += main.cpp \
-           layout.cpp \
-           hnet/udp.cpp \
-           hnet/host.cpp
+           layout.cpp
 
-HEADERS += layout.h \
-           hnet/udp.h \
-           hnet/host.h
+HEADERS += layout.h 

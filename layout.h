@@ -12,7 +12,7 @@
 #include <QDoubleSpinBox>
 #include <QCheckBox>
 #include <QGroupBox>
-#include "udp.h"
+#include <QUdpSocket>
 
 class Bit : public QWidget{
 	Q_OBJECT
@@ -52,7 +52,7 @@ private:
 	QLabel      *label_period;
 	QDoubleSpinBox *spin_period;
 	QPushButton *btn;
-	UDP  udp;
+	QUdpSocket* udp;
 	QTimer      *timer;
 	uint32_t data[3];
 	const char* m_ip;

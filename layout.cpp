@@ -80,7 +80,8 @@ void Layout::setGPIOInput( uint8_t reg_id ){
 	message[2] = reg_id;
 	udp->writeDatagram((char*)message, 3, 
 		QHostAddress(CLEVEL_IP), CLEVEL_PORT);
-	while( !udp->hasPendingDatagrams() );
+	while( !udp->hasPendingDatagrams() )
+		QCoreApplication::processEvents();
 	udp->readDatagram((char*)message, 3);
 }
 
@@ -91,7 +92,8 @@ void Layout::sample(){
 	message[1] = 2;
 	udp->writeDatagram((char*)message,14, 
 		QHostAddress(CLEVEL_IP), CLEVEL_PORT);
-	while( !udp->hasPendingDatagrams() );
+	while( !udp->hasPendingDatagrams() )
+		QCoreApplication::processEvents();
 	udp->readDatagram((char*)message,14);
 	uint32_t *bswap = (uint32_t*)&(message[2]);
 	for( int i = 0; i < 3; i++ ){

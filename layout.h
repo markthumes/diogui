@@ -13,6 +13,7 @@
 #include <QCheckBox>
 #include <QGroupBox>
 #include <QUdpSocket>
+#include <QCoreApplication>
 
 class Bit : public QWidget{
 	Q_OBJECT
